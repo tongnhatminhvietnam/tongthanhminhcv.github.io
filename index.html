@@ -2,15 +2,16 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>CV của Tống Nhật Minh</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
     <style>
         html, body {
             margin: 0;
             padding: 0;
             height: 100%;
             width: 100%;
-            overflow: hidden; /* Ngăn cuộn ngoài khung PDF */
+            overflow: hidden;
             background-color: #f0f0f0;
             font-family: Arial, sans-serif;
         }
@@ -18,34 +19,36 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            min-height: 100vh;
+            justify-content: flex-start;
+            width: 100%;
+            height: 100vh;
             padding: 10px;
             box-sizing: border-box;
+            margin: 0 auto;
         }
         h1 {
             color: #333;
             font-size: 24px;
-            margin-bottom: 10px;
+            margin: 10px 0;
             text-align: center;
         }
         .pdf-container {
             width: 100%;
-            height: calc(100vh - 60px); /* Trừ khoảng trống cho tiêu đề và link tải về */
-            border: 2px solid #333;
+            height: calc(100% - 80px);
+            overflow-y: auto;
+            border: 1px solid #333;
             border-radius: 8px;
-            overflow: auto;
-            box-sizing: border-box;
             background-color: #fff;
+            -webkit-overflow-scrolling: touch;
         }
-        iframe {
-            width: 100%;
-            height: 100%;
+        canvas {
+            width: 100% !important;
+            height: auto !important;
             display: block;
-            border: none;
+            margin: 0 auto;
         }
         .download-link {
-            margin-top: 10px;
+            margin: 10px 0;
             text-align: center;
         }
         .download-link a {
@@ -56,20 +59,28 @@
         .download-link a:hover {
             text-decoration: underline;
         }
-        /* Responsive cho thiết bị nhỏ */
-        @media (max-width: 768px) {
+
+        /* Tối ưu cho iPhone 11 Pro Max */
+        @media only screen and (max-width: 414px) {
             .container {
-                padding: 5px;
-            }
-            h1 {
-                font-size: 20px;
+                width: 414px;
+                height: 896px;
             }
             .pdf-container {
-                height: calc(100vh - 80px); /* Điều chỉnh cho màn hình nhỏ */
-                border: 1px solid #333;
+                height: calc(100% - 80px);
             }
-            .download-link a {
-                font-size: 14px;
+            canvas {
+                max-width: 394px;
+            }
+        }
+
+        /* Tối ưu cho màn hình lớn (máy tính) */
+        @media only screen and (min-width: 415px) {
+            .container {
+                max-width: 1200px; /* Giới hạn tối đa nếu muốn */
+            }
+            canvas {
+                max-width: 100%;
             }
         }
     </style>
@@ -77,12 +88,41 @@
 <body>
     <div class="container">
         <h1>CV của Tống Nhật Minh</h1>
-        <div class="pdf-container">
-            <iframe src="cv.pdf" style="width: 100%; height: 100%; border: none;"></iframe>
-        </div>
+        <div class="pdf-container" id="pdf-container"></div>
         <div class="download-link">
             <p>Nếu không thấy PDF, <a href="cv.pdf">tải về tại đây</a>.</p>
         </div>
     </div>
+
+    <script>
+        // Tải và hiển thị PDF
+        pdfjsLib.getDocument('cv.pdf').promise.then(function(pdf) {
+            const container = document.getElementById('pdf-container');
+            const scale = window.innerWidth <= 414 ? 1 : 1.5; // Tăng scale cho màn hình lớn
+            
+            // Hiển thị từng trang
+            for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                pdf.getPage(pageNum).then(function(page) {
+                    const viewport = page.getViewport({ scale: scale });
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    
+                    const renderContext = {
+                        canvasContext: context,
+                        viewport: viewport
+                    };
+                    
+                    page.render(renderContext).promise.then(function() {
+                        container.appendChild(canvas);
+                    });
+                });
+            }
+        }).catch(function(error) {
+            console.error('Lỗi khi tải PDF:', error);
+        });
+    </script>
 </body>
 </html>
