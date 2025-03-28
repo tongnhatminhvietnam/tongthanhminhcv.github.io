@@ -110,13 +110,13 @@
             <iframe width="560" height="315" src="https://www.youtube.com/embed/DB9OluMsnjg?si=ZCzW48SKoGF8VZxS" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>
         <div class="download-link">
-            <p>Nếu không thấy PDF, <a href="cv.pdf">tải về tại đây</a>.</p>
+            <p>Vui lòng ấn vào đây nếu không thấy PDF, <a href="cvs.pdf">tải về tại đây</a>.</p>
         </div>
     </div>
 
     <script>
         // Tải và hiển thị PDF
-        pdfjsLib.getDocument('cv.pdf').promise.then(function(pdf) {
+        pdfjsLib.getDocument('cvs.pdf').promise.then(function(pdf) {
             const container = document.getElementById('pdf-container');
             const scale = window.innerWidth <= 414 ? 1 : 1.5;
             const totalPages = pdf.numPages - 1; // Trừ đi trang cuối cùng
