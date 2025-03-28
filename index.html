@@ -34,7 +34,7 @@
         }
         .pdf-container {
             width: 100%;
-            height: calc(100% - 80px);
+            height: calc(100% - 200px); /* Điều chỉnh để nhường chỗ cho thông tin xác thực và video */
             overflow-y: auto;
             border: 1px solid #333;
             border-radius: 8px;
@@ -46,6 +46,23 @@
             height: auto !important;
             display: block;
             margin: 0 auto;
+        }
+        .verification-info {
+            margin: 10px 0;
+            text-align: center;
+            font-size: 16px;
+            color: #333;
+        }
+        .video-container {
+            margin: 10px 0;
+            width: 100%;
+            max-width: 560px;
+            text-align: center;
+        }
+        .video-container iframe {
+            width: 100%;
+            height: 315px;
+            border: none;
         }
         .download-link {
             margin: 10px 0;
@@ -67,10 +84,13 @@
                 height: 896px;
             }
             .pdf-container {
-                height: calc(100% - 80px);
+                height: calc(100% - 250px); /* Điều chỉnh thêm cho mobile */
             }
             canvas {
                 max-width: 394px;
+            }
+            .video-container iframe {
+                height: 200px; /* Giảm chiều cao video trên mobile */
             }
         }
 
@@ -89,6 +109,12 @@
     <div class="container">
         <h1>CV của Tống Nhật Minh</h1>
         <div class="pdf-container" id="pdf-container"></div>
+        <div class="verification-info">
+            <p>Giám đốc Văn phòng quản lý dự án - Trần Hồng Vượng: 091 330 83 58</p>
+        </div>
+        <div class="video-container">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/DB9OluMsnjg?si=ZCzW48SKoGF8VZxS" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
         <div class="download-link">
             <p>Nếu không thấy PDF, <a href="cv.pdf">tải về tại đây</a>.</p>
         </div>
@@ -99,11 +125,15 @@
         pdfjsLib.getDocument('cv.pdf').promise.then(function(pdf) {
             const container = document.getElementById('pdf-container');
             const scale = window.innerWidth <= 414 ? 1 : 1.5;
-            const totalPages = Math.min(pdf.numPages, 3); // Giới hạn tối đa 3 trang nếu PDF dài hơn
+            const totalPages = pdf.numPages - 1; // Trừ đi trang cuối cùng
 
-            // Hàm render trang theo thứ tự
+            if (totalPages < 1) {
+                container.innerHTML = '<p>PDF không có đủ trang để hiển thị.</p>';
+                return;
+            }
+
             function renderPage(pageNum) {
-                if (pageNum > totalPages) return; // Dừng khi vượt quá số trang cần hiển thị
+                if (pageNum > totalPages) return;
 
                 pdf.getPage(pageNum).then(function(page) {
                     const viewport = page.getViewport({ scale: scale });
@@ -118,10 +148,8 @@
                         viewport: viewport
                     };
 
-                    // Render trang và thêm vào container
                     return page.render(renderContext).promise.then(function() {
                         container.appendChild(canvas);
-                        // Render trang tiếp theo sau khi trang hiện tại hoàn tất
                         renderPage(pageNum + 1);
                     });
                 }).catch(function(error) {
@@ -129,7 +157,6 @@
                 });
             }
 
-            // Bắt đầu render từ trang 1
             renderPage(1);
         }).catch(function(error) {
             console.error('Lỗi khi tải PDF:', error);
