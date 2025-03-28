@@ -9,11 +9,9 @@
         html, body {
             margin: 0;
             padding: 0;
-            height: 100%;
             width: 100%;
-            overflow: hidden;
             background-color: #f0f0f0;
-            font-family: Arial, sans-serif;
+            font-family: Arial, sans банки-serif;
         }
         .container {
             display: flex;
@@ -21,7 +19,7 @@
             align-items: center;
             justify-content: flex-start;
             width: 100%;
-            height: 100vh;
+            min-height: 100vh; /* Đảm bảo container chiếm ít nhất 1 màn hình */
             padding: 10px;
             box-sizing: border-box;
             margin: 0 auto;
@@ -34,11 +32,11 @@
         }
         .pdf-container {
             width: 100%;
-            height: calc(100% - 200px); /* Điều chỉnh để nhường chỗ cho thông tin xác thực và video */
-            overflow-y: auto;
+            min-height: 300px; /* Đặt chiều cao tối thiểu để PDF hiển thị tốt */
             border: 1px solid #333;
             border-radius: 8px;
             background-color: #fff;
+            overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }
         canvas {
@@ -81,10 +79,6 @@
         @media only screen and (max-width: 414px) {
             .container {
                 width: 414px;
-                height: 896px;
-            }
-            .pdf-container {
-                height: calc(100% - 250px); /* Điều chỉnh thêm cho mobile */
             }
             canvas {
                 max-width: 394px;
@@ -110,7 +104,7 @@
         <h1>CV của Tống Nhật Minh</h1>
         <div class="pdf-container" id="pdf-container"></div>
         <div class="verification-info">
-            <p>Giám đốc Văn phòng quản lý dự án - Trần Hồng Vượng: 091 330 83 58</p>
+            <p>Người xác thực: Giám đốc Văn phòng quản lý dự án - Trần Hồng Vượng: 091 330 83 58</p>
         </div>
         <div class="video-container">
             <iframe width="560" height="315" src="https://www.youtube.com/embed/DB9OluMsnjg?si=ZCzW48SKoGF8VZxS" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
